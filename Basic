@@ -1,0 +1,189 @@
+# Cancelling commands
+# Some R commands may take a long time to run.
+# You can cancel a command once it has begun by pressing ctrl + c.
+# Note that it may also take R a long time to cancel the command.
+
+# Magic with numbers...........................................................
+# In this exercise i should end up the same number that i started with.
+
+22 + 2       # Choose any number and add 2 to it. I choose 22.
+24 * 3       # Multiply the result by 3
+72  - 6      # Subtract 6 from the answer.
+66 / 3       # Divide what you get by 3
+
+# Project 1 : Weighted Dice..................................................
+
+# The : operator returns its result as a vector, a one dimensional set of numbers
+1 : 6
+
+die <- 1:6   # Creating R Object. I now have a virtual die.
+
+# I can see which object names i have already used with the function ls()
+ls()
+
+# I can do all sorts of math with the die.
+# R uses element wise execution.
+die - 1
+die / 2
+die * die
+
+# When i give R two vectors of unequal lengths, R will repeat the shorter
+# vector until it is as long as the longer vector, and do the math.
+# If the length of short vector does not divide evenly into the length of
+# the long vector, R will return a warning massage.
+# This behavier is known as vector recycling, and it helps R to do element
+# wise operations.
+
+1:2
+1:4
+die
+die + 1:2
+die + 1:4         # will return a warning because the short vector does not 
+#  divide evenly into the length of the longer vector.
+
+die %*% die       # I can do inner multiplication with the %*% operator
+die %o% die       # Outer multiplication with the %o% operator
+
+# FUNCTION...................................................................
+
+round(3.1415)     # I can round a number with the round() function
+factorial(3)      # I can find out factorial number with the factorial() function
+
+# The data i pass into the function is called the function's argument.
+# The argument can be raw data, an R object, or even the results of another R
+# function.
+
+mean(1:6)
+mean(die)
+round(mean(die))
+
+# There is an R function that can help "roll" the die.
+# I can simulate a roll of the die with the sample() function.
+# sample() takes two arguments: a vector named x and number named size.
+# sample() will return size elements from the vector
+
+sample(x = die, size = 1)
+sample(die, size = 1)   # Or
+
+args(round)  # I can look up the function's arguments with args()
+round(3.2456, digits = 2)  # round() takes two arguments
+# An R funtion will take optional arguments like digits.
+# I can pass a new value to an optional argument if i want and R will use
+# the default value if i do not.
+
+# If i do not write out the names of my arguments, R will match my values
+# to the arguments in my function by order.
+
+sample(die, 1)
+
+# R will always match a value to its argument name, no matter where it
+# appears in the order of arguments.
+sample(size = 2, x = die)
+
+# SAMPLE WITH REPLACEMENT...................................................
+
+# replace = TRUE argument replace each value after each draw.
+# sampling with replacement is an easy way to create independent random samples.
+# This is the correct way to simulate a pair of dice
+
+sample(x = die, size = 2, replace = TRUE) # Two independent random samples.
+
+# If i want to add up the dice, i can feed my result straight into the sum()
+# function
+
+dice <- sample(x = die, size = 2, replace = TRUE)
+sum(dice)
+
+# WRITING MY OWN FUNCTIONS..................................................
+
+# Every function in R has three basic parts: a name, a body of code, a set of arguments.
+# To make my own function, i need to replicate these parts and store them in
+# a R object, which i can do with the function(){} function.
+# function will build a function out of whatever R code i place between the braces.
+# I can turn my dice code into a function ba calling:
+
+roll <- function(){
+  die <- 1:6
+  dice <- sample(x = die, size = 2, replace = TRUE)
+  sum(dice)
+}
+
+# To use it, write the object's name followed by an open and close parenthesis.
+
+roll()
+
+# If i type a function's name without the parenthesis, R will show me the
+# code that is stored inside thr function.
+
+roll
+
+# ARGUMENTS.................................................................
+
+# What if we i removed one line of code from my function and changed the
+# name die to bones, like this?
+
+roll2 <- function(){
+  dice <- sample(bones, size = 2, replace = TRUE)
+  sum(dice)
+}
+
+# Now i will get an error when i run the function. The function needs the
+# object bones to do its job, but there is no object named bones to be found:
+
+roll2()
+
+# I can supply bones when i call roll2 if i make bones an argument of the
+# function. To do this, put the name bones in the parenthesis that follow
+# function when i define roll2:
+
+roll2 <- function(bones){
+  dice <- sample(bones, size =2, replace = TRUE)
+  sum(dice)
+}
+
+# Now roll2 will work as long as i supply bones when i call the function.
+# I can take advantage of this to roll different types of dice each time i
+# call roll2. Remember we are rolling a pair of dice.
+
+roll2(bones = 1:4)
+
+roll2(bones = 1:6)
+
+roll2(1:20)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

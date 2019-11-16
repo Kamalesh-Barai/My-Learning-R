@@ -151,39 +151,51 @@ roll2(bones = 1:6)
 
 roll2(1:20)
 
+roll2(30)
 
+# Notice that roll2 will still give an error if you I do not supply a value
+# for the bones argument when i call roll2:
 
+roll2()
 
+# I can prevent this error by giving the bones argument a default value.
+# TO do this, set bones equal to a value when i define roll2:
 
+roll2 <- function(bones = 1:6){
+  dice <- sample(bones, size = 2, replace = TRUE)
+  dice
+}
 
+# Now i can supply a new value for bones if i like, and roll2 will use the
+# default value if i do not:
 
+roll2(1000)
+roll2()
 
+# packages and help pages................................................................
 
+# Let's make the dice roll high numbers slightly more often than it rolls
+# low numbers. Before we weight the dice, we should make sure that they are
+# fair to begin with. Two tools will help me do this: 
+# "repetation" and "visualization"
 
+# We will repeat our dice rolls wiith a function called "replicate" and 
+# will visualize our rolls with a function called "qplot".
+# "qplot comes" in a standalone R package called "ggplot2"
+# "ggplot2" is a popular package for making grapHS.
 
+# INSTALL PACKAGES........................................................
 
+install.packages("ggplot2")
 
+# To use an R package i next have to load it into my R session with the
+# command:
 
+library("ggplot2")
 
+# "qplot" makes "quick plot". If i give "qplot" two vectors of equal length
+# "qplot" will draw a scatterplot for me. "qplot" will use the first vector
+# as a set of x values and the second vector as a set of y values.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# I can create vectors of numbers with the c function. Give c all of the
+# numbers that want to appear in the vector, seperated by comma.

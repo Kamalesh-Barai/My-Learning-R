@@ -199,3 +199,79 @@ library("ggplot2")
 
 # I can create vectors of numbers with the c function. Give c all of the
 # numbers that want to appear in the vector, seperated by comma.
+# c stands for concatenate, but i can think of it "combine" or "collect"
+
+Bangladesh <- c(-1, -0.8, -0.6, -0.4, -0.3, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1)
+India <- Bangladesh^3
+
+# "qplot" makes a scatter plot when i give it two vector
+
+qplot(Bangladesh, India)
+
+# A scatterplot is a set of points, each plotted acording to its x and y
+# values. "qplot" make points with element wise execution.
+# Scatterplots are useful for visualizing the relationship between two variables.
+
+# Now we are going to use a different type of graph, a histogram.
+# A histogram visualizes the distribution of a single variable.
+# It displays how many data points appear at each value of x.
+# "qplot" will make a histogram whenever i give it only one vector to plot.
+# "binwidth" is the width of bar.
+
+x <- c(1, 2, 2, 2, 3, 3)
+qplot(x, binwidth = 1)
+
+# This plot shows that our vector contains one value in the interval
+# [1, 2) by placing a bar of height 1 avobe the interval.
+# The plot shows that the vector contains three values in the interval
+# [2, 3) by placing a bar of height 3 in that interval.
+# It shows that the vector contains two values in the interval
+# [3, 4) by placing a bar of height 2 in that interval.
+# Hard bracket, [, means that the first number is included in the interval
+# The parenthesis, ), means that the last number is not included.
+
+# Let's try another histogram
+
+x2 <- c(1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4)
+qplot(x2, binwidth = 1)
+
+# Visualze a histogram
+
+x3 <- c(0, 1, 1, 2, 2, 2, 3, 3, 4)
+qplot(x3, binwidth = 1)
+
+# How can i use a histogram to check the accuracy of my dice?
+# "replicate" provides an easy way to repeat an R command many times.
+# To use it first give "replicate" the number of times you wish to repeat an R
+# command. "replicate" will run the command multiple times and stored the result
+# as a vector.
+
+replicate(3, 1+1)
+
+rolls1 <- replicate(10, roll())
+qplot(rolls1, binwidth = 1)
+
+# Let's simulate 10000 dice rolls and plot the results
+# The result that the dice are fair.
+
+rolls <- replicate(10000, roll())
+qplot(rolls, binwidth = 1)
+
+# The probability of rolling any single number on a fair die is 1/6.
+# I would like you to change the probability to 1/8 for each number below six,
+# and then increase the probability of rolling a six to 3/8.
+# Rewrite the roll function bellow to roll a weigted dice.
+
+rollb <- function(){
+  die <- 1:6
+  dice <- sample(die, size = 2, replace = TRUE,
+                 prob = c(1/8, 1/8, 1/8, 1/8, 1/8, 3/8))
+  sum(dice)
+}
+rollsb <- replicate(10000, rollb())
+qplot(rollsb, binwidth = .5)
+
+# This confirms that we've effectively weighted the dice. High number occur
+# much more often than low numbers.
+# The remarkable thing is that this behavior will only be apparent when i examine
+# long turm frequencies

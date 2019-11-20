@@ -1,0 +1,222 @@
+# Atomic vector..........
+
+# An atomic vector is just a vector of data.
+# I can make an atomic vector by grouping some values of data together with c:
+
+die <- c(1,2,3,4,5,6)
+die
+
+# is.vector
+# is.vector tests whether an object is an atomic vector, It returns TRUE if the
+# object is an atomic vector and FALSE otherwise.
+
+is.vector(die)
+
+# I can also make an atomic vector with just one value. R saves single values
+# as an atomic vector of length 1:
+
+five <- 5
+five
+is.vector(five)
+
+# length
+# "length" returns the length of an atomic vector 
+
+length(five)
+length(die)
+
+# Each atomic vector stores its values as a one-dimensonal vector, and each atomic
+# vector can only store one type of data. I can save different types of data in 
+# R by using different types of atomic vectors. Altogether, R recognizes six
+# basic types of atomic vectors: doubles, integers, characters, logicals,
+# complex, and raw.
+
+# TO create my card deck, i will nees to use different types of atomic vectors
+# to save different types of information(text and numbers).
+# I can do this by using some simple conventions when i enter my data.
+# I can create an integer vector by including a capital "L" with my input.
+# I can create a character vector by surrounding my input in quotation marks:
+
+int <- 1L
+text <- "ace"
+
+# Each type atomic vector has its own convention. R will recognize the convention
+# and use it to create an atomic vector of the appropriate type.
+# Use the same convention with each element:
+
+int <- c(1L, 5L)
+text <- c("ace", "hearts")
+
+# Vector types help R behave as i would expect. For example, R will do math with
+# atomic vectors that contain numbers, but not with atomic vectors that contain
+# charactor strings:
+
+sum(int)
+sum(text)
+
+# Doubles...........................
+
+# A double vector stores reguler numbers. The numbers can be positive or negative,
+# large or small and have digits to the right of the decimal place or not.
+# In general, R will save any number that i type in R as a double.
+# The die i made was a double object.
+# I can ask R what type of object an object is with "typeof":
+
+die <- c(1,2,3,4,5,6)
+die
+typeof(die)
+
+# Integers..........................
+
+# Integer vectors store integer, numbers that can be written without decimal
+# component. As a data scientist i won't use the integer type very often because
+# i can save integers as a double object. I can specifically create an ineger in
+# R by typing a number followed by an uppercase L.
+
+int <- c(-1L, 2L, 4L)
+int
+typeof(int)
+
+# Note that R won't save a number as an integer unless i include the L. Integer
+# numbers without the L will be saved as doubles.
+# The only difference between 4 and 4L is how R saves the number in my computer's
+# memory.
+
+# Characters.........................
+
+# The individual elements of a character vector are known as strings.
+# Note that a string can contain more than just letters.
+# I can assemble a character string from numbers or symbols as well.
+
+text <- c("Hello", "World")
+text
+typeof(text)
+text1 <- c("1", "2")
+typeof(text1)
+
+# Logicals............................
+
+# Logical vectors store TRUEs and FALSEs, R's form of boolean data.
+# Logical are very help fro doing comparisons.
+
+3 > 4
+
+# Any time i type TRUE or FALSE in capital letters, R will treat my input as
+# logical data. R also assumes that T and F are shorthand for TRUE and FALSE,
+# unless they are defined elsewhere.
+
+logic <- c(TRUE, FALSE, TRUE)
+logic
+typeof(logic)
+typeof(F)
+
+# Complex and Raw......................
+
+# Complex vectors store complex numbers. Tp create a complex vector,
+# add an imaginary term to a number with i:
+
+comp <- c(1 + 1i, 1 + 2i, 1 + 3i)
+comp
+typeof(comp)
+
+# Raw vectors store raw bytes of data. Making raw vectors gets
+# complicated, but i can make an empty raw vector of length n with raw(n).
+
+raw(3)
+typeof(raw(3))
+
+# Vector of cards........................
+
+# Create an atomic vector that stores just the face names of the cards
+# in royal flush.
+# For example, the ace of spades, king of spades, queen of spades, jack
+# of spades and ten of spades.
+# The face name of ace of spades would be "ace", and spades is the suit.
+
+hand <- c("ace", "king", "queen", "jack", "ten")
+hand
+typeof(hand)
+
+# This creats a one dimensional group of card names.
+
+# Attributes..............................
+
+# Let's make a more sophisticated data structure, a two dimensional table
+# of card names and suit
+# I can build a more sophisticated object from an atomic vector by giving
+# it some attributes and assigning it a class.
+# An attribute is a piece of information that i can attach  to an atomic
+# vector or any R objects.
+# I can see which attributes an object has with "attributes".
+# "attributes will return NULL if an object  has no attributes.
+
+attributes(die)
+
+# R uses NULL to represent the null set, an empty object.
+# NULL is often returned by functions whose values are undefined.
+# I can a NULL object by typing NULL in capital letters.
+
+# Names.........
+
+# The most common attributes to give an atomic vector are names,
+# dimensions(dim), and classes. Each of this attributes has its own 
+# helper function that i can use to give attributes to an object. I can
+# also use the helper functions to look up the value of these attributes
+# for boject that already have them. For example, i can look up the
+# value of the "names" attribute of die with "names":
+
+names(die)
+
+# NULL means that die does not have a names attribute. I can give one to
+# die by assigning a character vector to the output of names. The vector
+# should include one name for each element in die:
+
+names(die) <- c("one", "two", "three", "four", "five", "six")
+
+# Now die has a name attribute
+
+names(die)
+attributes(die)
+
+# R will display the names avobe the elements of die whenever i look at
+# the vector:
+
+die
+
+# However, the names won't effect the actual values of the vector, nor
+# will tha names be affected when i manipulate the values of the vector:
+
+die + 1
+
+# I can also use "names" to change the names attribute or remove it all
+# together. To change the names, assign a new set of levels to names:
+
+names(die) <- c("uno", "dos", "tres", "quatro", "cinco", "seis")
+die
+
+# To remove the names attribute, set it to NULL:
+
+names(die) <- NULL
+die
+
+# Dimensions(Dim).....................
+
+# I can transform an atomic vector into an n-dimensional array by giving
+# it a dimensions attribute with "dim". To do this, set the "dim"
+# attribute to a numeric vector of length n.
+# I can recognize die into a 2 X 3 matrix (which has 2 rows and 3 columns)
+
+dim(die) <- c(2, 3)
+die
+
+# Or, 3 X 2 matrix (which has 3 rows and 2 columns)
+
+dim(die) <- c(3, 2)
+die
+
+# Or a 1 X 2 X 3 hypercube (which has 1 row, 2 columns, 3 "slices")
+# This is a three-dimensional structure, but R will need to show it slice
+# by slice by slice on my two-dimensional computer screen:
+
+dim(die) <- c(1,2,3)
+die

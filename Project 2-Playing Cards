@@ -220,3 +220,188 @@ die
 
 dim(die) <- c(1,2,3)
 die
+
+# Matrices........................
+
+# Matrices store values in a two-dimensional array. First give "matrix"
+# an atomic vector then define how many rows should be in the matrix by
+# setting the "nrow" argument to a number. I can set the "ncol" argument
+# which tells R how many columns to include in the matrix:
+
+m <- matrix(die, nrow = 2)
+
+# "matrix" will fill up the matrix column by column by default, but i can
+# fill the matrix row by row if i include the argument byrow = TRUE:
+
+m <- matrix(die, nrow = 2, byrow = TRUE)
+m
+
+# The "array" function creats an n-dimensional array. For example, I could
+# use "array" to sort values into a cube of three-dimensions or a hypercube
+# in 4,5 or n dimensions. "array" is not as customizeable as matrix and
+# basically does the same thing as setting the "dim" attribute. To use
+# array, provide an atomic vector as the first argument, and a vector of
+# dimensions as the second argument, now called "dim"
+
+ar <- array(c(11:14, 21:24, 31:34), dim = c(2, 2, 3))
+ar
+
+# Create a matrix, which stores the name and suit of every card in royal flush
+
+hand1 <- c("ace", "king", "queen", "jack", "ten",
+                "spades", "spades", "spades", "spades", "spades")
+hand1
+
+# Individually each line of code make hand1 to a 5 X 2 matrix
+
+matrix(hand1, nrow = 5)
+matrix(hand1, ncol = 2)
+dim(hand1) <- c(5, 2)
+
+# I can also start with a character vetor that lists the cards in a slightly
+# different order. In this case, i wll need to ask R to fill the matrix
+# row by row instead of column by column:
+
+hand2 <- c("ace", "spades", "king", "spades", "queen",
+           "spades", "jack", "spades", "ten", "spades")
+hand2
+matrix(hand2, nrow = 5, byrow = TRUE)
+matrix(hand2, ncol = 2, byrow = TRUE)
+
+# class.....................................
+
+# Notice that changing the dimensions of my object will not change the type
+# of the object, but it will change the object's class attribute:
+
+dim(die) <- c(2, 3)
+typeof(die)
+class(die)
+
+# Note that an object's "class" attribute will not always appear when i
+# run attributes. I may need to specifically for it with "class"
+# Notice that the "class" of a double is "numeric". The most important
+# property of a double vector is that it contains numbers.
+
+attributes(die)
+class("Hello")
+class(5)
+
+# Dates and times.......................
+
+# The time looks like a character string when i display it, but its data type is 
+# actually "double", and its class is "POSIXct" "POSIXt (It has two classes):
+
+now <- Sys.time()
+now
+typeof(now)
+class(now)
+
+# POSIXct is a widely used framework for representing dates and times. In the
+# POSIXct framework, each time is represented by the numbers of seconds that
+# have passed between the time and 12:00 AM January 1st 1970 (in UTC)
+# R creates the time object by building a double vector with one element. I can
+# see this vector by removing the "class" attribute of now or by using the
+# "unclass" function.
+
+class(now) <- NULL
+now
+unclass(now)  # OR
+
+# R function will use the POSIXct standard to convert the time into a user
+# friendly character string before displaying it.
+
+mill <- 3452373634
+mill
+
+class(mill) <- c("POSIXct", "POSIXt")
+mill
+
+# Factors.............................
+
+# Factors are R's way of storing categorical information like ethnicity, eye color.
+# To make a factor, pass an atomic vector into the "factor" function. R will
+# recode the data in the vector as integers and store the results in an integer
+# vector. R will also add a "levels" attrubute to the integer, which contains
+# a set of levels for displaying the factor values and a "class" attribute.
+
+gender <- factor(c("male", "female", "female", "male"))
+typeof(gender)
+attributes(gender)
+
+# I can see exatly how R is storing my factor with "unclass":
+
+unclass(gender)
+gender
+
+# I can convert a factor to a character string with "as.character":
+
+as.character(gender)
+
+# Each atomic vector can only store one type of data. As a result, R coerces
+# all of my values to one type of data.
+
+card <- c("ace", "hearts", 1)
+card
+typeof(card)
+class(card)
+
+# I can explictly ask R to convert data from one type to another with "as":
+
+as.character(12)
+as.logical(12)
+as.logical(-0.56)
+as.numeric(FALSE)
+
+# Another type of object: LIST..........................................
+
+# "list" group data into a one-dimensional set.
+# "list" do not group togather individual togather; "list" group togather
+# R object, such as atomic vectors and other list.
+# I can make a "list" that contains a numeric vector, character vector, and a
+# new list with the "list" function:
+
+list1 <- list(100:130, "R", list(TRUE, FALSE))
+list1
+
+# I can store a playing card in a very simple list
+
+card <- list("ace", "hearts", 1)
+card
+
+# I can save a deck of playing cards as a list of 52 sublists. But there's a
+# much cleaner way to do the same thing. I can use a special class of list,
+# known as "data frame".
+
+# A class of list: Data Frame.........................
+
+# Data frames are the two-dimensional version of list. Data frames group
+# vectors together into a two-dimensional table. Each vector becomes a column
+# in the table. Every column in data frame must be the same length. Each
+# column can be a different data type.
+
+df <- data.frame(face = c("ace", "two", "six"),
+                 suit = c("clubs", "clubs", "clubs"),
+                 value = c(1, 2, 3))
+df
+
+# I named the arguments in "data.frame" face, suit, value. "data.frame" will
+# use my argument names to level the column of data frame.
+
+# I can also give names to a list or vector when i create one of these objects
+
+list2 <- list(face = "ace", suit = "hearts", value = 1)
+list2
+typeof(list2)
+class(list2)
+
+vect <- c(face = "king", suit = "spades", value = 10)
+vect
+typeof(vect)
+class(vect)
+
+# Each data frame is a "list" with class "data.frame". I can see what types of
+# objects are group togather by a "list" or "data frame" with the "str" function:
+
+typeof(df)
+class(df)
+str(df)

@@ -405,3 +405,185 @@ class(vect)
 typeof(df)
 class(df)
 str(df)
+
+# R Saved my character string as factors. I can prevent this behavior by 
+# adding the argument "stringsAsFactors = FALSE" to data.frame:
+
+df <- data.frame(face = c("ace", "two", "six"),
+                 suit = c("club", "club", "club"),
+                 value = c(1, 2, 3), stringsAsFactors = FALSE)
+df
+str(df)
+
+# Data frame is a great way to build an entire deck of cards. I can make each
+# row in the data frame a playing card, and each column a type of value.
+
+f <- c("king", "queen", "jack", "ten", "nine", "eight",
+          "seven", "six", "five", "four", "three", "two", "ace")
+face <- c(f, f, f, f)
+
+s1 <- c("spades","spades","spades","spades","spades","spades",
+           "spades","spades","spades","spades","spades","spades","spades")
+s2 <- c("club","club","club","club","club","club",
+           "club","club","club","club","club","club","club")
+s3 <- c("diamond","diamond","diamond","diamond","diamond","diamond",
+           "diamond","diamond","diamond","diamond","diamond","diamond","diamond")
+s4 <- c("hearts","hearts","hearts","hearts","hearts","hearts",
+           "hearts","hearts","hearts","hearts","hearts","hearts","hearts")
+
+suit <- c(s1, s2, s3, s4)
+
+value <- c(13:1, 13:1, 13:1, 13:1)
+
+deck <- data.frame(face, suit, value, stringsAsFactors = FALSE)
+deck
+
+# Loading data from a coumputer file.............................
+
+# I can load a csv file from my computer with the "read.csv" function:
+
+deck <- read.csv("G:/Programming/deck.csv", stringsAsFactors = FALSE)
+
+# When i import a data set, Rstudio will save the data to a data frame. I can
+# open any data frame in a view tab with the "view" function:
+
+View(deck)
+
+# "head" will return just the first six rows of the data set, and "tail" will
+# return just the last six rows. To see a different number of rows, give
+# "head" or "tail" a second argument, the number of rows i would like to vies.
+
+head(deck)
+tail(deck)
+head(deck, 10)
+tail(deck, 10)
+
+# Saving data to my computer............................................
+
+# I can save any data frame in R to a .csv file with the command "write.csv".
+
+write.csv(deck, file = "card.csv", row.names = FALSE)
+
+# R will turn my data frame into a plain text-file with comma-seperated values
+# format and save the file to my working directory.
+# To see where my working directory is:
+
+getwd()
+
+# Selecting  Values.........By Positive Integers............
+
+# To exract a value or set of values from a data frame, write the data frame's
+# name followed by a pair of hard brackets. Between the brackets will go two
+# indexes seperated by coomma. R will use the first index to sebset the rows
+# of the data frame and second index to subset the columns.
+# In R indexing begin at 1.
+
+# Selecting the element of the first row and frist column
+
+deck[1,3]
+
+# Selecting the element of the first row and 1,2,3 column
+
+deck[1, 1:3]
+
+deck[c(1,2), c(1,2,3)]
+
+# R will give a new set of values which are copies of the orginal values and
+# i can save them to a new vector.
+
+new <- deck[1, 1:3]
+new
+
+# if a repeat a number in my index, R will return the corresponding values more
+# than once in my subset. This code will return the first row of deck thrice.
+
+deck[c(1,1,1), c(1,2,3)]
+
+# I can use the same syntax to select values in any R object. One index for
+# each dimension. I can subset a vector (which has one dimension)  with a single
+# index:
+
+vec <- c(6, 3, 5, 3, 6, 7, 2, 10)
+vec[1:3]
+
+# drop = FALSE
+
+# If i select a single a column, R will return a vector.
+
+deck[1:2, 1]
+
+# If i would prefer a data frame instead, i can add the optional argument
+# drop = FALSE between the brackets:
+
+deck[1:2, 1, drop = FALSE]
+
+# Selecting values.............By Negative integers...........
+
+# R will return every element except the elements in a negetive index. For
+# example this code will return everythig except the first row of deck:
+
+deck[-1, 1:3]
+
+# This code will return the first row and exclude everything.
+
+deck[-(2:52), 1:3]
+
+# Selecting values by blank speces..................
+# I can use a blank space to tell R to extract every value in a dimension. This is
+# useful extracting entire rows or columns from a data frame.
+
+deck[ ,1, drop = FALSE]
+deck[1, ]
+
+# Selecting values by logical values.................
+# If i supply a vector of TRUEs and FALSEs as my index, R will match each TRUE
+# and FALSE to a row or column in my data frame. R will then return each row or
+# column that corresponds to a TRUE.
+
+deck[1, c(TRUE, FALSE, TRUE)]
+
+rows <- c(T,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,
+          F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,
+          F,F,F,F,F,F,F,F,F,F)
+deck[rows, ]
+
+# Selecting values by names...........................
+
+deck[1, c("face", "suit", "value")]
+deck[ , "value"]
+
+# Deal a card.......................................
+# Make a function that returns the first row of a data frame
+
+deal <- function(card){
+  card[1, ]
+}
+
+deal(deck)
+
+# A function that returns any row of deck data frame.
+# If i do not pass a number in this function, it will return the whole data frame
+
+deal. <- function(index){
+  deck[index, ]
+}
+
+deal.(50)
+
+# Shuffle the deck....................
+# To shuffle the deck, i need to randomly reorder the rows in the data frame.
+
+random <- sample(1:52, size = 52)
+random
+random_deck <- deck[random, ]
+random_deck
+
+# Write a function that shuffle the cards and return the first row of shuffle data frame. 
+
+shuffle <- function(cards){
+  random <- sample(1:52, size = 52)
+  shuffle_deck <- cards[random, ]
+  deal(shuffle_deck)
+}
+
+shuffle(deck)

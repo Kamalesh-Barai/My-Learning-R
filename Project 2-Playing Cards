@@ -712,3 +712,120 @@ c(1, 2, 3, 4) %in% c(3, 4, 5)
 
 deck2 $ face == "ace"
 sum(deck2 $ face == "ace")
+
+# change aces value in the shuffle deck
+
+deck3 <- shuffle(deck)
+deck3
+
+# First build a logiical test that identifies the aces in my shuffle deck
+
+deck3 $ face == "ace"
+
+# Then use the test to single out the ace point values. Since the test returns
+# logical vector, i can use it as an index
+
+deck3 $ value[deck3 $ face == 'ace']
+
+# Finally use assignment to change the ace values in deck3:
+
+deck3 $ value[deck3 $ face == "ace"] <- 14
+deck3
+
+# Lets put logical subsetting to use with a new game: hearts. In hearts, every
+# card has a value of zero;
+
+deck4 <- deck
+deck4
+deck4 $ value <- 0
+head(deck4)
+
+# In hearts game each card in the suit of hearts has a value of 1. Find this
+# cards and replace their values
+
+deck4 $ suit == "hearts"
+deck4 $ value[deck4 $ suit == "hearts"]
+deck4 $ value[deck4 $ suit == "hearts"] <- 1
+
+# In hearts, the queen of spades has 13 points
+# Finding all queens and all of the cards in spades
+
+deck4[deck4 $ face == "queen", ]
+deck4[deck4 $ suit == "spades", ]
+
+# Boolean Operators......................................
+# But there are many cards. I want to find only queen of spades card. I can do
+# that with a boolean operator. Boolean operators combine multiple logical
+# tests togather into asingle test. Boolean operators are things like and (&),
+# or (|). They collapse the result of multiple logical tests into a single TRUE
+# or FALSE.
+
+#   & ....... cond1 & cond2 ........... Are both cond1 and cond2 true?
+#   | ....... cond1 | cond2 ........... one or more of cond1, cond2 true?
+#   xor ..... xor(cond1, cond2) ....... one of cond1 and cond2 true?
+#   ! ....... !cond1 .................. is cond1 false?
+#   any ..... any(cond1,...) .......... any of the conditions true?
+#   all ..... all(cond1,...) .......... are all of the conditions true?
+
+# R will evaluate the expression on each side of a boolean operator seperately,
+# and then combine the results into a single TRUE or FALSE.
+# When used with vectors, boolean operators will follow the element wise
+# execution as arithmetic and logical operators:
+
+a <- c(1, 2, 3)
+b <- c(1, 2, 3)
+c <- c(1, 2, 4)
+
+a == b
+b == c
+
+a == b & b == c
+
+# I can use a boolean operator to locate the queen of spades in my deck
+# I will save the reults of this test to a object.
+
+deck4 $ face == "queen" & deck4 $ suit == "spades"
+queen_spades <- deck4 $ face == "queen" & deck4 $ suit == "spades"
+
+# Now i can use the test as an index to select the value of the queen of
+# spades and change the value from 0 to 13
+
+deck4[queen_spades, ]
+deck4 $ value[queen_spades] <- 13 # Now my deck is ready to play hearts.
+
+# Practice with Tests..................................
+
+w <- c(-1, 0, 1)    # Is w positive?
+w > 0
+
+x <- c(5, 15)       # Is x grater than 10 and less than 20?
+x > 10 & x < 20
+
+y <- "February"     # Is object y the word February?
+y == "February"
+
+z <- c("Monday", "Tuesday", "Friday") # Is every value in z a day of the week?
+all(z %in% c("Saturday", "Sunday", "Monday", "Tuesday",
+         "Wednesday", "Thursday", "Friday"))
+
+# Blackjack Game. In blackjack, each number card has a value equal to its
+# face value. Each face card (king, queen, jack) has a value of 10. Each
+# ace has a value of 11 or 1 depending on the final results of the game.
+
+deck5 <- deck
+head(deck5, 13)
+
+# Selecting the face card and assing them to facecard
+
+deck5 $ face %in% c("king", "queen", "jack")
+facecard <- deck5 $ face %in% c("king", "queen", "jack")
+deck5[facecard, ]
+
+deck5 $ value[facecard] <- 10  # change their values.
+deck5
+
+# The actual value of the ace will depend on the other cards in the player's
+# hand. This is a case of missing information. At the moment, i don't have
+# enough information to assign a correct point value to the ace cards.
+
+# Missing information

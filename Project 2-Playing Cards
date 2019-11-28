@@ -829,3 +829,101 @@ deck5
 # enough information to assign a correct point value to the ace cards.
 
 # Missing information
+
+# I don't know a value because the measurement was lost, corrupted, or never
+# taken to begin with. R has a way help me manage these missing values.
+# The NA character is a special symbol in R. It can be used as a placeholder
+# for missing information. R will treat NA exactly as i should want missing
+# information treated.
+
+# Return NA. Because i do not have enough information to determine the result.
+
+1 + NA
+NA == 1
+
+# Missing values can help me work around holes in my datasets but they can
+# also create some frustrating problems. If one of the values is NA, my
+# result will be NA.
+
+c(NA, 1:50)
+mean(c(NA, 1:50))
+
+# The argument, "na.rm" which is stand for NA remove. R will ignore NA
+# when it evaluates a function if i add the argument na.rm = TRUE
+
+mean(c(NA, 1:50), na.rm = TRUE)
+
+# If something is a missing value, any logical test that uses it will return
+# a missing value, even this test:
+
+NA == NA
+
+# R supplies a special function that can test whether a value is an NA.
+
+is.na(NA)
+vec <- c(1, 2, 3, NA)
+is.na(vec)
+
+# Let's set all of my ace values to NA. It will remind me that i do not
+# know the final value of each ace. It will prevent me from accidently
+# scoring a hand that has an ace before i determine the ace's final value.
+
+Blackjack_deck $ value[Blackjack_deck $ face == "ace"] <- NA
+Blackjack_deck[Blackjack_deck $ face == "ace", ]
+
+# Environments.....................................
+# Shauffle and deck, both of these functions use deck, but neither
+# manipulates deck-and i would like them to. To fix these functions, i will
+# need to learn how R stores, looks up, and manipulates object. R does all
+# of these things with the help of an environment system.
+# I can see R's environment system with the "parenvs" function in the "pryr"
+# package. "parenvs(all = TRUE)" will return a list of the environments that
+# my R session is using.
+
+install.packages("pryr")
+library(pryr)
+parenvs(all = TRUE)
+
+# Working with Environments...............................
+# R comes with some helper functions that i can use to explore my environment
+# tree. First i can refer to any of the environments in my tree with
+# "as.environment. It takes an environment name (as a character string) and
+# returns the corrosponding environment:
+
+as.environment("package:pryr")
+
+# Three environments in my tree also come with their own accesso functions.
+# These are the the global environment, the base environment, and the empty
+# environment. I can refer to them with:
+
+globalenv()
+baseenv()
+emptyenv()
+
+# I can look up an environment's parent with "parent.env":
+# Notice that empty environment is the only R environment without a parent
+
+parent.env(globalenv())
+parent.env(emptyenv())
+
+# I can view the objects saved in an environment  with "ls" or "ls.str".
+# "ls" will return just the object name, but "ls.str" will display a little
+# about each object's structure:
+
+ls(emptyenv())
+ls.str(globalenv())
+ls()
+ls.str()
+
+# I can use R's $ syntax to access an object in a specific environment.
+# For example, I can access deck from the global environment:
+
+head(globalenv() $ deck, 3)
+
+# I can use the "assign" function to save an object into a particular
+# environment. First give "assign" the name of the new object (as a string)
+# then give "assign" the value of the new object, and finally the environment
+# to save the object in:
+
+assign("new", "Hello Global", envir = globalenv())
+globalenv() $ new

@@ -927,3 +927,112 @@ head(globalenv() $ deck, 3)
 
 assign("new", "Hello Global", envir = globalenv())
 globalenv() $ new
+
+# I can use "environment" function to see the current active environment:
+
+environment()
+
+# Evaluation...................................
+# R creats a new environment each time it evaluates a function. R will use
+# the new environment as the active environment while it runs the function,
+# and then R will return to the environment that i called the function from,
+# bringing the function's result with it.
+
+# R will create a runtime environment the function in. "show_env" function
+# will tell us the name of the runtime environment, it's parent, and which
+# objects the runtime environment contains.
+
+show_env <- function(){
+  list(ran.in = environment(),
+  parent = parent.env(environment()),
+  objects = ls.str(environment()))
+}
+
+show_env()
+show_env() # Let's run "show_env" again. This time it will run a new environment.
+
+# which environment R will use as the parent of the runtime environment.?
+# R will connect a function's runtime environment to the environment thet
+# the function was first created in. All of the function's runtime environments
+# will use it as a origin environment. I can look up a function's origin
+# environment by running "environment" on the function:
+
+environment(show_env)
+
+# The origin environment of "show_env" is the global environment because
+# we created "show_env" at the command line. But the environment of
+# "parenvs" is the pryr package:
+
+environment(parenvs)
+
+# R will store any objects created by "show_env" in its runtime environment
+
+show_env <- function(){
+  a <- 1
+  b <- 2
+  c <- 3
+  list(ran.in = environment(),
+       parent = parent.env(environment()),
+       objects = ls.str(environment()))
+}
+show_env()
+
+# If a function has arguments. R will copy over each argument to the runtime
+# environment. The argument will appear as an object.
+
+foo <- "take me to your runtime"
+show_env <- function(x = foo){
+  list(ran.in = environment(),
+       parent = parent.env(environment()),
+       object = ls.str(environment()))
+  
+}
+show_env()
+
+# Let's fix the deal function to remove the cards it has dealt from deck
+
+DECK <- deck     # copy of deck
+deck <- DECK     # refill the deck
+deck <- deck[-1, ]     # remove 1st card from deck
+head(deck, 3)
+
+deal <- function(){
+  card <- deck[1, ]
+  assign("deck", deck[-1, ], envir = globalenv())
+  card
+}
+
+# Now deal will finally clean up the global copy of deck, and we can deal
+# cards just as we would in real life.
+
+deal()
+deal()
+deal()
+
+# Let's turn my attention to the shuffle function:
+
+setup <- function(){
+  DECK <- deck
+  
+  SHUFFLE <- function(){
+    random <- sample(1:52, size = 52)
+    assign("deck", DECK[random, ], envir = parent.env(environment()))
+  }
+  
+  DEAL <- function(){
+    card <- deck[1,]
+    assign("deck", deck[-1, ], envir = parent.env(environment()))
+    card
+  }
+  
+  list(shuffle = SHUFFLE, deal = DEAL)
+}
+
+card <- setup()
+
+deal <- card $ deal
+shuffle <- card $ shuffle
+
+rm(deck)
+shuffle()
+deal()

@@ -1,0 +1,91 @@
+# Project 3: Slot Mechine
+# Programs..................................
+# In this chapter, i will build a real, working slot mechine that i can play
+# by running an R function. The name of function will be "play" function.
+# The "play" function will need to do two things. First, it will need to
+# randomly generate three symbols; and second it will need to calculate a prize
+# based on those symbols.
+
+# I an randomly generate three symbols with the "sample" function. The following
+# function generates three symbols from a group of common slot mechine symbols:
+# diamonds (DD), sevens (7), triple bars (BBB), double bars (BB), single bars (B),
+# cherries (C), and zeroes (0). The symbols are selected randomly, and each symbol
+# appears with a different probability:
+
+get_symbols <- function(){
+  wheel <- c("DD", "7", "BBB", "BB", "B", "C", "0")
+  sample(wheel, size = 3, replace = TRUE, prob = c(0.03, 0.03, 0.06, 0.1,
+                                                   0.25, 0.01, 0.52))
+}
+get_symbols()
+
+# Strategy..................................
+# Storing slot mechine results is a complex task that will require a complex
+# algorithm. I can make this, and other coding tasks, easier by using a simple
+# strategy. I can make coding easier by indentifing the individual steps or
+# subtask within my program. R programs contain two types of subtasks:
+# sequential steps and parallel cases.
+
+# Sequential steps............................
+# I can make my solt mechine program by three different sepuential steps.
+# First step - Generate symbols. Second step - Display the symbols.
+# Third step - Score the symbols. To have R execute these steps in sequence,
+# Place the steps one after another in an R script or function body.
+
+play <- function(){
+  
+  # step 1: generate symbols
+  symbols <- get_symbols()
+  
+  # step 2: display the symbols
+  print(symbols)  # The "print" command prints its output to the console window
+  
+  # step 3: score the symbols
+  score(symbols)
+}
+
+# Parallel Cases..................................
+# I have already solved the first few steps in this strategy. My program can
+# get three slot mechine symbols with the "get_symbols" function. Then it can
+# display the symbols with the print function. Now let's examine how the program
+# can handle the parallel score cases. The complete slot mechine simulation
+# will involve subtasks that are arranged both in series and in parallel.
+
+# if statements..................................
+# An if statement tells R to do a certain task for a certain case. In English
+# i would say something like, "if this is true, do that".
+# I can write an if statement that ensures some object, num, is positive.
+# If num < 0 is TRUE, R will multiple num by negative one, which will make num
+# positive:
+
+num <- -4
+if(num < 0){
+  num <- num * -1
+}
+num
+
+# If num < 0 is FALSE, R will do nothing and num will remain as it is:
+
+num <- 2
+if(num < 0){
+  num <- num * -1
+}
+num
+
+# The condition of an "if" statement must evaluate to a single TRUE or FALSE.
+# If the condition creates a vector of TRUES and FALSES, my "if" statement will
+# print a warning message and use only the first of the vector.
+
+condition <- c(TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE,)
+if(condition){
+  print("I have taken TRUE, beacuse TRUE is the first element of condition")
+}
+
+# Remember that i can condense vectors of logical values to a single TRUE or
+# FALSE with the function "any" and "all"
+
+condition2 <- c(FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)
+# Given a set a logical vector, is at least one of the values true?
+any(condition2)
+all(condition2) # Are all of the values true?
+

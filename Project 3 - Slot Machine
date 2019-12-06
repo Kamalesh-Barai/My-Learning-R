@@ -347,3 +347,244 @@ play <- function() {
 # Now it is easy to play the slot mechine
 
 play()
+
+# The S3 system.........................................
+# S3 refers to a class system built into R. The system governs how R handles
+# objects of different classes. Certain R functions will lookup an onject's
+# S3 class, and then behave differently in response. R's S3 system is built
+# arround three components: attributes (especially the "class" attribute),
+# generic function, and methods.
+
+# The "print" fuynction is like this. When i print a numeric vector,
+# print will display a number.
+
+number <- 1000000000
+print(number)
+
+# But if i give that number the S3 class POSIXct followed POSIXt, print will
+# display a time.
+
+class(number) <- c("POSIXct", "POSIXt")
+print(number)
+
+# My current mechine displays its results in a less preety format. Moreover,
+# The slot mechine uses a hack to display symbols (I call "print" from
+# within "play"). As a result, the symbols do not follow my prize output
+# if i save it.
+
+one_play <- play()
+one_play
+
+# I can fix both of these problems with R's S3 symtem. I can add any general
+# attribute to an object with "attr". I can also use "attr" to loook up the
+# value of any atribute of an object. Let's see how this works with "one_play"
+
+attributes(one_play)
+
+# "attr" takes two argument: an R object and the name of an attribute (as a
+# string). To give the R object an attribute of the specified name, save a vlaue
+# to the output of "attr". Let's give "one_paly" an attribute named "symbols"
+# that contains a vector of character strings:
+
+attr(one_play, "symbols") <- c("B", "0", "B")
+attributes(one_play)
+
+# To look up the value of any attribute, give "attr" an R object and the name
+# of the attribute i would like to look up:
+
+attr(one_play, "symbols")
+one_play
+
+# Modify "play" function to return a prize that contains the symbols associated
+# with iot as an attribute named "symbols". Remove the redundant call to
+# print(symbols):
+
+play <- function(){
+  symbols <- get_symbols()
+  prize <- score(symbols)
+  attr(prize, "symbols") <- symbols
+  prize
+}
+
+play()
+two_play <- play()
+two_play
+
+# I can also generate a prize and set its attributes in one step with the
+# "structure" function. "structure" creates an object with a set of attributes
+# The first argument of "structure" should be an R object or set of values, and
+# the remaining arguments should be named attributes for structure to add the
+# object.
+
+play <- function() {
+  symbols <- get_symbols()
+  structure(score(symbols), symbols = symbols)
+}
+
+play()
+
+three_play <- play
+three_play()
+
+# I can write my own functions that lookup and use the attribute. This following
+# function will lookup one_play's "symbols" atttribute and use it to display
+# "one_play" in a pretty manner. I will use this function to display my
+# slot results:
+
+slot_display <- function(prize){
+  
+  # Extract symbols
+  symbols <- attr(prize, "symbols")
+  
+  # collapse symbol into singe string
+  symbols <- paste(symbols, collapse = "")
+  
+  # combine symbol with prize as a character string
+  # \n is special escape sequense for a new line
+  string <- paste(symbols, prize, sep = "\n$")
+  
+  # display character string in console without quotes
+  cat(string)
+}
+
+slot_display(one_play)
+one_play
+
+# The first line of function will lookup the value of the "symbols" attribute
+# and save it as an object named "symbols"
+
+symbols <- attr(one_play, "symbols")
+symbols
+
+# "Paste" collapse a vector of character strings into a single string when i
+# give it the "collapse" argument. "paste" will use the value of "collapse"
+# to seperate the formerly distinct strings.
+
+symbols <- paste(symbols, collapse = " ")
+symbols
+
+# "paste" combines seperate objects into a character string when i give it a
+# "sep" argument. "paste" will combine the string in "symbols" with the number
+# in "prize". "paste" will use the value of "sep" to seperate the inputs in
+# the new string. 
+
+prize <- one_play
+string <- paste(symbols, prize, sep = "\n$")
+string
+
+# "cat" is like "print". It displays its input at the command line. "cat" does
+# not surround its output with quotation marks. "cat" also replaces every '\n'
+# with a new line or line break.
+
+cat(string)
+
+slot_display(play())
+
+# Full code.......................................
+
+get_symbols <- function(){
+  wheel <- c("DD", "7", "BBB", "BB", "B", "C", "0")
+  sample(wheel, size = 3, replace = TRUE, prob = c(0.03, 0.03, 0.06, 0.1,
+                                                   0.25, 0.01, 0.52))
+}
+
+score <- function (symbols) {
+  same <- symbols[1] == symbols[2] && symbols[2] == symbols[3]
+  bars <- symbols %in% c("B", "BB", "BBB")
+  
+  if (same) {
+    payouts <- c("DD" = 100, "7" = 80, "BBB" = 40, "BB" = 25,
+                 "B" = 10, "C" = 10, "0" = 0)
+    prize <- unname(payouts[symbols[1]])
+    
+  } else if (all(bars)) {
+    prize <- 5
+    
+  } else {
+    cherries <- sum(symbols == "C")
+    prize <- c(0, 2, 5)[cherries + 1]
+    
+  }
+  diamonds <- sum(symbols == "DD")
+  prize * 2 ^ diamonds
+}
+
+# I can use S3 to format my slot output. First, give my output its own class.
+# Then write a print method for that class.
+
+play <- function() {
+  symbols <- get_symbols()
+  structure(score(symbols), symbols = symbols, class = "slots")
+}
+
+slot_display <- function(prize){
+  symbols <- attr(prize, "symbols")
+  symbols <- paste(symbols, collapse = " ")
+  string <- paste(symbols, prize, sep = "\n$")
+  cat(string)
+}
+
+# Write a new print method fro the slots class. The method should call "slot_display"
+# to return well formatted slot-mechine output. 
+
+print.slots <- function(x, ...){
+  slot_display(x)
+}
+
+play()
+class(play())
+
+# If i wrote the "slot_display" code inside the "print.slots", they would look
+# like this:
+
+print.slots <- function(x, ....) {
+  x <- play()
+  symbols <- attr(x, "symbols")
+  symbols <- paste(symbols, collapse = " ")
+  string <- paste(symbols, x, sep = "\n$")
+  cat(string)
+}
+
+# Classes............................................
+# I can use the S3 system to make a robust new class of objects in R. Then R will
+# treat objects of my class in a consistent, sensible manner. To make a class:
+# Choose a name for my class. Assign each instance of my class attribute. Write a
+# class methods for any generic function likely to use objects of my class
+
+# Consider how many methods exist for predefined classes. I can call "methods" on a
+# class with the "class" argument, which takes a character string.
+methods(class = "factor")
+
+# Consider two challenges that i will face right away. First, R drops attributes
+# (like class) when it combines objects into a vector.
+
+play1 <- play()
+play1
+attributes(play1)
+
+play2 <- play()
+play2
+attributes(play2)
+
+c(play1, play2)
+attributes(c(play1, play2))
+
+# Here, R stops using "print.slots" to display the vector because the vector
+# c(play1, play2) no longer has a "slots" +class+ attribute. Next, R will drop the
+# attributes of an object (like class) when i subset the object:
+
+play1[1]
+attributes(play1[1])
+
+# I can aviod this behaviour by writting a "c.slots" method and "[.slots" method,
+# but then difficulties will quickly accrue. How would i combine the "symbols"
+# attribute of multiple plays into a vector of symbols attributes? How would i change
+# "print.slots" to handle vector of outputs?
+
+# expand.grid ..............................................
+# The "expand.grid" function in R provides a quick way to write out every
+# combination of the elements in n vector. "expand.grid" will return a data frame
+# that contains every way to pair an element from the first vector with an element
+# from the second vector.
+
+expand.grid(c(1,2,3,4,5,6), c(1,2,3,4,5,6))

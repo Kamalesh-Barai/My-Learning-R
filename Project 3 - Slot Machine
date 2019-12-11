@@ -873,3 +873,49 @@ abs_set <- function (vec) {
 
 abs_set(c(-1,-2,-3,-4,-5,-6))
 
+# "abs_set" is much faster than "abs_loop" because it relies on operations
+# that R does does quickly: logical tests, subsetting, and element-wise
+# execution.
+
+# I can use the "system.time" function to see just how fast "abs_set" is.
+# "system.time" takes an R expression, runs it, and then displays how
+# much time elapsed while the expression run.
+# To compare "abs_loop" and "abs_Set", first make a long vector of positive
+# and negative numbers. "long" will conatin 10 million values.
+
+long <- rep(c(-1, 1), 5000000)
+
+# "rep" repeats a value, or vector of values, many times. To use "rep"
+# give it a vector of values and then the number of times to repeat the
+# vector. I can then use "system.time" to measure how much time it takes
+# each function to evaluate long:
+
+system.time(abs_loop(long))
+system.time(abs_set(long))
+
+# The first two column of the output of "system.time" report how many
+# seconds my computer spent executing the call on the user side and
+# system side of my prosses. The last column displays how many seconds
+# elapsed while R ran the expression.
+
+# R comes with a built-in absoulate value function, "abs()"
+system.time(abs(long))
+
+# How to write vectorized code...........................
+# I can identify all of the elements of a vector that fall into a case
+# with logical test. R will execute the test in element-wise fashion and
+# return a TRUE for every element that belongs in that case.
+
+# For example, "vec < 0" identifies every value of "vec" that belongs to
+# the negative case.
+
+# I can use the same logical test to extract the set of negative values
+# with logical subsetting:
+
+vec <- c(1, -2, 3, -4, 5, -6, 7, -8, 9, -10)
+vec < 0
+vec[vec < 0]
+vec[vec < 0] * -1       # Turn into absolute value from negative value
+vec[vec < 0] <- vec[vec < 0] * -1 # replace the vector with absolute value
+
+

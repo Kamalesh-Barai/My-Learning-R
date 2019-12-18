@@ -1087,13 +1087,6 @@ play_many <- function (n) {
 # Now i need to write "score_many" that a vectorized version of "score" that
 # takes an n X 3 matrix and returns n prizes.
 
-symbols <- matrix(c("DD", "DD", "DD",
-                    "C", "DD", "DD",
-                    "B", "B", "B",
-                    "DD", "BBB", "DD",
-                    "C", "C", "0",
-                    "DD", "DD", "7"), nrow = 6, byrow = TRUE)
-
 score_many <- function (symbols) {
   # STEP 1: Assign base prize based on cherries and diamonds
   # count the number of cherries and diamonds in each combination
@@ -1142,4 +1135,26 @@ score_many <- function (symbols) {
   # Treat as all bars (if appropriate)
   wild_bars <- one_wild & (rowSums(bars) == 2)
   prize [wild_bars] <- 5
+  
+  # Treat as three of a kind (if appropriate)
+  one <- one_wild & symbols[, 1] == symbols[, 2]
+  two <- one_wild & symbols[, 2] == symbols[, 3]
+  three <- one_wild & symbols[, 3] == symbols[, 1]
+  prize[one] <- payoffs[symbols[one, 1]]
+  prize[two] <- payoffs[symbols[two, 2]]
+  prize[three] <- payoffs[symbols[three, 3]]
+  
+  # STEP 5: Double prize for every diamond in combo
+  unname(prize * 2^diamonds)
 }
+
+score_many(symbols)
+
+play_many(100)
+
+plays <- play_many(10000000)
+mean(plays$prize)
+
+system.time(play_many(10000000))
+
+
